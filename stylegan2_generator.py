@@ -142,7 +142,6 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         
         self.resolution = resolution
         self.__adjust_resolution(weights)
-        self.dlatent_avg = np.load('weights/{}_dlatent_avg.npy'.format(weights))
 
         self.mapping_network = MappingNetwork(resolution=self.resolution,name='Mapping_network')
         self.synthesis_network = SynthesisNetwork(resolution=self.resolution, impl=impl, 
@@ -152,7 +151,12 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         #we run the network to define it, not the most efficient thing to do...
         _ = self(tf.zeros(shape=(1, 512)))
         self.__load_weights(weights)
-        
+
+        z = np.zeros((1,512), 'float32')
+        w = self.mapping_network(z) # right tensor shape
+        w_avg = np.load('weights/{}_dlatent_avg.npy'.format(weights)) # flat 512-list
+        self.dlatent_avg = w_avg + (w-w_avg)*0.0 # force into tensor shape
+
         
     def call(self, z):
         """
