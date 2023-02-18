@@ -136,19 +136,23 @@ class StyleGan2Generator(tf.keras.layers.Layer):
 
         """
         super(StyleGan2Generator, self).__init__(**kwargs)
+
+        if weights is None:
+            raise ValueError('Must define weights')
         
         self.resolution = resolution
-        if weights is not None: self.__adjust_resolution(weights)
+        self.__adjust_resolution(weights)
+        self.dlatent_avg = np.load('weights/{}_dlatent_avg.npy'.format(weights))
 
         self.mapping_network = MappingNetwork(resolution=self.resolution,name='Mapping_network')
         self.synthesis_network = SynthesisNetwork(resolution=self.resolution, impl=impl, 
                                                   gpu=gpu, name='Synthesis_network')
         
         # load weights
-        if weights is not None:
-            #we run the network to define it, not the most efficient thing to do...
-            _ = self(tf.zeros(shape=(1, 512)))
-            self.__load_weights(weights)
+        #we run the network to define it, not the most efficient thing to do...
+        _ = self(tf.zeros(shape=(1, 512)))
+        self.__load_weights(weights)
+        
         
     def call(self, z):
         """
