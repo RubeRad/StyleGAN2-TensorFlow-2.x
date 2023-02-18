@@ -16,7 +16,7 @@ def get_weight_initializer_runtime_coef(shape, gain=1, use_wscale=True, lrmul=1)
     
     return init_std, runtime_coef
 
-def convert_images_to_uint8(images, drange=[-1, 1], nchw_to_nhwc=False, shrink=1, uint8_cast=True):
+def convert_images_to_uint8(images, drange=[-1, 1], nchw_to_nhwc=True, shrink=1, uint8_cast=True):
     """Convert a minibatch of images from float32 to uint8 with configurable dynamic range.
     Can be used as an output transformation for Network.run().
     """
@@ -31,7 +31,7 @@ def convert_images_to_uint8(images, drange=[-1, 1], nchw_to_nhwc=False, shrink=1
     images = images * scale + (0.5 - drange[0] * scale)
     if uint8_cast:
         images = tf.saturate_cast(images, tf.uint8)
-    return images
+    return images.numpy()[0]
 
 def nf(stage, fmap_base=16 << 10, fmap_decay=1.0, fmap_min=1, fmap_max=512): 
     return np.clip(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_min, fmap_max)
