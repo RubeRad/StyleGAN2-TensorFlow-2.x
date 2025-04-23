@@ -18,7 +18,7 @@ class FromRgbLayer(tf.keras.layers.Layer):
         
         self.conv2d_rgb = Conv2DLayer(fmaps=self.fmaps, kernel=1, impl=self.impl, gpu=self.gpu, name='FromRGB')
         
-        self.rgb_bias = self.add_weight(name='FromRGB/bias', shape=(self.fmaps,), 
+        self.rgb_bias = self.add_weight(name='FromRGB_bias', shape=(self.fmaps,), 
                                         initializer=tf.random_normal_initializer(0,1), trainable=True)
         
     def call(self, x, y):

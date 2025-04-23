@@ -21,14 +21,14 @@ class BlockLayer(tf.keras.layers.Layer):
         self.conv2d_0 = Conv2DLayer(fmaps=nf(self.res-1), kernel=3, 
                                     impl=self.impl, gpu=self.gpu, name='Conv0')
         
-        self.bias_0 = self.add_weight(name='Conv0/bias', shape=(nf(self.res-1),), 
+        self.bias_0 = self.add_weight(name='Conv0_bias', shape=(nf(self.res-1),), 
                                       initializer=tf.random_normal_initializer(0, 1), trainable=True)
         
         self.conv2d_1_down = Conv2DLayer(fmaps=nf(self.res-2), kernel=3, down=True, 
                                          resample_kernel=self.resample_kernel, 
                                          impl=self.impl, gpu=self.gpu, name='Conv1_down')
         
-        self.bias_1_down = self.add_weight(name='Conv1_down/bias', shape=(nf(self.res-2),), 
+        self.bias_1_down = self.add_weight(name='Conv1_down_bias', shape=(nf(self.res-2),), 
                                            initializer=tf.random_normal_initializer(0, 1), trainable=True)
         
         self.conv2d_skip = Conv2DLayer(fmaps=nf(self.res-2), kernel=1, down=True, 
