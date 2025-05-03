@@ -1,3 +1,5 @@
+import re
+
 import tensorflow as tf
 import numpy as np
 
@@ -209,8 +211,13 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         """
         
         if (weights_name in available_weights) and type(weights_name) == str:
-            data = np.load(weights_stylegan2_dir + weights_name + '.npy', allow_pickle=True)[()]
-            
+            # ffhq.npy from nvidia has / in the layer names
+            broke = np.load(weights_stylegan2_dir + weights_name + '.npy', allow_pickle=True)[()]
+            data = {}
+            for slashy in broke.keys():
+                undery = re.sub(r'/', '_', slashy)
+                data[undery] = broke[slashy]
+
             weights_mapping = [data.get(key) for key in mapping_weights]
             weights_synthesis = [data.get(key) for key in synthesis_weights[weights_name]]
             
